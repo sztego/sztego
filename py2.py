@@ -1,4 +1,8 @@
 from random import randint
+import os
+
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 class Player:
     def __init__(self,name,max_hp,hp,gold,min_dmg,max_dmg,\
@@ -121,6 +125,7 @@ def roads(p):
         print("")
         print("Sötét alagút tátong előtted.")
         ut = str(input("Tovább mész (1), vagy inkább lefekszel aludni?(2)"))
+        cls()
         if ut not in ("1","2"):
             print("")
             print("Mondom 1 vagy 2!")
@@ -179,8 +184,8 @@ def battle (p,m):
             m.hp -= sajat_sebzes
             p.hp -= szorny_sebzes
             print("")
-            print("Megcsaptad a dögöt "+str(sajat_sebzes)+" sérülést okozva.")
-            print("De ő is megkarmolt téged "+str(szorny_sebzes)+" sérülést okozva neked.")
+            print("Megcsaptad a dögöt. -"+str(sajat_sebzes)+"hp")
+            print("De ő is megkarmolt téged -"+str(szorny_sebzes)+"hp")
             if p.hp <= 0:
                 print("")
                 print("Agyoncsapott a szörny.")
@@ -193,16 +198,7 @@ def battle (p,m):
                 p.xp += m.xp
                 p.gold += m.gold
                 if p.xp >= p.xp_max:
-                    p.level += 1
-                    p.max_hp += 5
-                    p.hp = p.max_hp
-                    p.xp = 0
-                    p.xp_max = int(p.xp_max * 1.2)
-                    p.bonus_dmg += 1
-                    print("")
-                    print("Elég tapasztalatot gyűjtöttél ahhoz hogy szintet lépj.")
-                    print("!!!"+str(p.level)+". szintre lépsz!!!")
-                    print("Feltöltődsz, kapsz +5 maximum HP-t és +1-et a sebzésedbe.")
+                    level_up(p)
                 break
             else:
                 print(str(p.hp)+"/"+str(p.max_hp)+" életed van.")
@@ -210,13 +206,30 @@ def battle (p,m):
                 print("")
                 continue
 
+def level_up (p):
+    hp_change = int(p.max_hp * 0.3)
+    xp_change = int(p.xp_max * 0.5)
+    dmg_change = int(p.level * 0.5) + 1
+    p.level += 1
+    p.max_hp += hp_change
+    p.hp = p.max_hp
+    p.xp = 0
+    p.xp_max += xp_change
+    p.bonus_dmg += dmg_change
+    print("")
+    print("Elég tapasztalatot gyűjtöttél ahhoz hogy szintet lépj.")
+    print("!!!" + str(p.level) + ". szintre lépsz!!!")
+    print("+" + str(hp_change) + " hp")
+    print("+" + str(xp_change) + " max xp")
+    print("+" + str(dmg_change) + " sebzés")
+
 
 a = menu()
 if a == "1":
     monster_add()
     name = input("Add meg a neved!")
     print("Üdvözöllek Sir "+name+"!")
-    generate_map(6,6)
+    generate_map(10,10)
     init_hp = 20 + randint(-5,5)
     player = Player(name,init_hp,init_hp,0,2,4,0,10,0,1,0)
     roads(player)
