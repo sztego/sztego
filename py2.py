@@ -45,8 +45,6 @@ def monster_add ():
     monsters.append(Monster("Zombi",10,10,1,4,6,1))
                     
                     
-
-
 def menu ():
     print("Ez itt főmenü.")
     print("Két választásod van: ")
